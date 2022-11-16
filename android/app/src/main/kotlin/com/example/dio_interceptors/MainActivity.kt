@@ -1,4 +1,4 @@
-package com.example.dio_interceptors_loggers
+package com.example.dio_interceptors
 
 import io.flutter.embedding.android.FlutterActivity
 

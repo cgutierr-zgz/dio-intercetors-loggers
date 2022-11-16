@@ -1,12 +1,9 @@
+
 import 'package:dio/dio.dart';
 import 'package:dio/native_imp.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
-abstract class Environment {
-  static const String baseUrl = 'https://jsonplaceholder.typicode.com';
-}
 
 class DioClient extends DioForNative {
   DioClient({
@@ -26,36 +23,41 @@ class DioClient extends DioForNative {
         // Whatever interceptors you want to add
         ...?interceptors,
         // Retry Interceptor
-        RetryInterceptor(dio: this, logPrint: print),
+        RetryInterceptor(
+          dio: this,
+          logPrint: print,
+
+        ),
 
         // Network Logger interceptor only for debug mode
         if (kDebugMode) ...[
-          // Pretty Dio Logger from https://pub.dev/packages/pretty_dio_logger
-          PrettyDioLogger(
-            requestHeader: true,
+          // Base Log interceptor
+          LogInterceptor(
             requestBody: true,
-            responseHeader: true,
+            responseBody: true,
             // ... other options
+            requestHeader: false,
+            responseHeader: false,
+            error: false,
+            request: false,
+            logPrint: (log) {
+              if (log.toString().isEmpty) return;
+              debugPrint('🌐 ${log.toString()}');
+            },
           ),
 
-          // Our Custom Logger from below :D
-          LoggerInterceptor()
+          // Pretty Dio Logger from https://pub.dev/packages/pretty_dio_logger
+          PrettyDioLogger(
+            requestBody: true,
+            responseBody: true,
+            // ... other options
+            requestHeader: false,
+            responseHeader: false,
+            error: false,
+            request: false,
+          ),
         ]
       ],
     );
   }
-}
-
-class LoggerInterceptor extends LogInterceptor {
-  LoggerInterceptor()
-      : super(
-          requestBody: true,
-          responseHeader: false,
-          responseBody: true,
-          logPrint: (log) {
-            if (kDebugMode == false) return;
-
-            debugPrint('🌐 ${log.toString()}');
-          },
-        );
 }

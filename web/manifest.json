@@ -1,6 +1,6 @@
 {
-    "name": "dio_interceptors_loggers",
-    "short_name": "dio_interceptors_loggers",
+    "name": "dio_interceptors",
+    "short_name": "dio_interceptors",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
